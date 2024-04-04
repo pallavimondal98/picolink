@@ -83,7 +83,7 @@ const getLink = async(req, res)=> {
 
    
     if (!link) {
-      const finalLink = `${protocol}://${'localhost:3000'}?message=linkExpired`;
+      const finalLink = `https://dev-picolink.onrender.com?message=linkExpired`;
       return res.redirect(finalLink);
   }
 
