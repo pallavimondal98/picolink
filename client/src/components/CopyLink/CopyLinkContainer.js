@@ -4,7 +4,7 @@ const CopyLinkContainer = ({ link }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`https://picolink.org/${link}`);
+    navigator.clipboard.writeText(`${link}`);
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
@@ -21,7 +21,7 @@ const CopyLinkContainer = ({ link }) => {
             rel="noopener noreferrer"
             className="w-full bg-transparent border-none focus:outline-none text-blue-500 underline"
           >
-            https://picolink.org/{link}
+            {link}
           </a>
           <button
             className="p-1 bg-gray-400 text-white rounded-2xl focus:outline-none"

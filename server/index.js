@@ -1,30 +1,35 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 require('dotenv').config();
-// const { v4: uuidv4 } = require("uuid");
 const { createLink, getLink } = require("./linkController");
-
+const connectDB = require("./db/connect");
+const linkRoutes = require('./routes/linkRoutes.js')
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URL);
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
 
 
 // Routes
-app.post("/create", createLink);
-app.get("/:id", getLink);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.use('/',linkRoutes)
+
+const port = process.env.PORT || 5000;
+
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    app.listen(port, () =>
+      console.log(`Server is listening on port ${port}...`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
+
+
