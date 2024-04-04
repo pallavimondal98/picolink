@@ -43,7 +43,7 @@ const createLink =async (req, res)=> {
       linkId,
     })
 
-   createdLink.createdAt.expires = totalValidity
+   createdLink.createdAt.expires = 20000
 
    await createdLink.save()
 
@@ -73,14 +73,19 @@ const getLink = async(req, res)=> {
   try {
     const linkId = req.params.id;
 
-    
+    const protocol = req.protocol;
 
     // Retrieve link data from MongoDB using the linkId
     const link = await Link.findOne({ linkId });
 
+
+
+
+   
     if (!link) {
-      return res.status(404).json({ error: "Link not found" });
-    }
+      const finalLink = `${protocol}://${'localhost:3000'}?message=linkExpired`;
+      return res.redirect(finalLink);
+  }
 
     // You need to compare the hashed URL with the incoming URL
 

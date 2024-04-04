@@ -8,6 +8,25 @@ const LinkShortener = () => {
   const [shortenedLink, setShortenedLink] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [rediectionMessage, setRedirectionMessage] = useState('');
+
+  React.useEffect(() => {
+    // Get the query string parameters from the URL
+    const queryParams = new URLSearchParams(window.location.search);
+    
+    // Get the value of the 'message' parameter
+    const messageParam = queryParams.get('message');
+
+    if(messageParam){
+      alert('link has expired. please try again')
+    }
+
+    // Set the 'message' state with the parameter value
+    setRedirectionMessage(messageParam);
+
+
+  }, []);
+
   // Handle form submission
   const handleShorten = async (e) => {
     e.preventDefault();
