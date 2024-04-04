@@ -43,7 +43,7 @@ const createLink =async (req, res)=> {
       linkId,
     })
 
-   createdLink.createdAt.expires = 20000
+   createdLink.createdAt.expires = totalValidity
 
    await createdLink.save()
 
