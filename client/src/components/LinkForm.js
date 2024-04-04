@@ -30,7 +30,8 @@ const LinkShortener = () => {
 
       // Send POST request to backend
       const response = await axios.post("http://localhost:5000/api/links/create", {
-        url: originalLink
+        url: originalLink,
+        validity : expiration
       });
 
       // Extract shortened link from response
