@@ -48,7 +48,7 @@ const LinkShortener = () => {
       }
 
       // Send POST request to backend
-      const response = await axios.post("http://localhost:5000/api/links/create", {
+      const response = await axios.post("https://dev-picolink.onrender.com/api/links/create", {
         url: originalLink,
         validity : expiration
       });
