@@ -29,13 +29,13 @@ const LinkShortener = () => {
       }
 
       // Send POST request to backend
-      const response = await axios.post("https://picolink-org.onrender.com/create", {
-        url: originalLink,
-        validity: expiration,
+      const response = await axios.post("http://localhost:5000/api/links/create", {
+        url: originalLink
       });
 
       // Extract shortened link from response
-      const { link } = response.data;
+      const { link,url } = response.data;
+
       // console.log(link);
       // console.log(`https://picolink.org/${link}`);
 

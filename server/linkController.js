@@ -1,16 +1,15 @@
-const jwt = require("jsonwebtoken");
-// const { v4: uuidv4 } = require("uuid");
-const bcrypt = require('bcrypt');
+
 const ShortUniqueId = require('short-unique-id');
 const Link = require("./Model/linkModel");
 
 // Secret key for JWT token
-const secretKey = process.env.JWT_SECRET;
 
 // Controller function for creating a link
 const createLink =async (req, res)=> {
+  const host = req.headers['host'];
+  const protocol = req.protocol;
   try {
-    const { url, validity } = req.body;
+    const { url } = req.body;
 
     // Check if the originalLink is empty
     if (!url || url.trim() === "") {
@@ -24,21 +23,29 @@ const createLink =async (req, res)=> {
     }
 
     // Hash the URL with bcrypt
-    const hashedUrl = await bcrypt.hash(url, 10);
 
     //Short Unique Id
     const uid = new ShortUniqueId({ length: 10 });
     const linkId = uid.rnd();
 
+
+    console.log(linkId)
+
+    let finalLink = `${protocol}://`+req.headers['host']+ `/${linkId}`
+
+    await Link.create({
+      url,
+      linkId,
+    })
+
     // Save link data to MongoDB
-    const link = new Link({ linkId, url: hashedUrl, validity });
-    await link.save();
 
-    // Generate JWT token with linkId as payload
-    const token = jwt.sign({ linkId }, secretKey, { expiresIn: validity * 60 * 60 * 24 }); // Expires after validity period
+    res.json({
+      url,
+      link : finalLink
 
-    // Return shortened link along with token
-    res.json({ link: `${linkId}`, token });
+    })
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server Error" });
@@ -47,8 +54,12 @@ const createLink =async (req, res)=> {
 
 // Controller function for getting a link by ID
 const getLink = async(req, res)=> {
+
+  console.log('came here')
   try {
     const linkId = req.params.id;
+
+    
 
     // Retrieve link data from MongoDB using the linkId
     const link = await Link.findOne({ linkId });
@@ -58,11 +69,9 @@ const getLink = async(req, res)=> {
     }
 
     // You need to compare the hashed URL with the incoming URL
-    const isValidUrl = await bcrypt.compare(req.url, link.url);
 
-    if (!isValidUrl) {
-      return res.status(400).json({ error: "Invalid URL" });
-    }
+
+ 
 
     // Return the link data
     // res.json(link);

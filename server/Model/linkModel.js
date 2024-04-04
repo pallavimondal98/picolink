@@ -10,16 +10,8 @@ const linkSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    validity: {
-        type: Number,
-        required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        // TTL index for automatic document expiration
-        expires: 0, // Documents will expire immediately after validity period
-    },
+ 
+   
 })
 
 const Link = mongoose.model("Link", linkSchema);
