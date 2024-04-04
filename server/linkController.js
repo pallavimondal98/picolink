@@ -6,6 +6,11 @@ const Link = require("./Model/linkModel");
 
 // Controller function for creating a link
 const createLink =async (req, res)=> {
+  console.log(req.body.validity)
+  const validForDays = req.body.validity
+  const oneDay = 1000 * 60 * 60 * 24
+
+  let totalValidity = oneDay * parseInt(validForDays);
   const host = req.headers['host'];
   const protocol = req.protocol;
   try {
@@ -33,10 +38,18 @@ const createLink =async (req, res)=> {
 
     let finalLink = `${protocol}://`+req.headers['host']+ `/${linkId}`
 
-    await Link.create({
+    const createdLink = await Link.create({
       url,
       linkId,
     })
+
+   createdLink.createdAt.expires = totalValidity
+
+   await createdLink.save()
+
+   console.log(createdLink)
+
+    
 
     // Save link data to MongoDB
 
@@ -56,17 +69,23 @@ const createLink =async (req, res)=> {
 const getLink = async(req, res)=> {
 
   console.log('came here')
+
   try {
     const linkId = req.params.id;
 
-    
+    const protocol = req.protocol;
 
     // Retrieve link data from MongoDB using the linkId
     const link = await Link.findOne({ linkId });
 
+
+
+
+   
     if (!link) {
-      return res.status(404).json({ error: "Link not found" });
-    }
+      const finalLink = `https://dev-picolink.onrender.com?message=linkExpired`;
+      return res.redirect(finalLink);
+  }
 
     // You need to compare the hashed URL with the incoming URL
 
